@@ -22,14 +22,9 @@ var socialClient *social.Client
 
 func main() {
 	var err error
-	serverURL = os.Getenv("LINECORP_PLATFORM_SERVERURL")
-	channelID = os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELID")
-	channelSecret = os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
-
-	if bot, err = linebot.New(os.Getenv("LINECORP_PLATFORM_CHATBOT_CHANNELSECRET"), os.Getenv("LINECORP_PLATFORM_CHATBOT_CHANNELTOKEN")); err != nil {
-		log.Println("Bot:", bot, " err:", err)
-		return
-	}
+	serverURL = "http://line-login.igokuz.com/access_token"
+	channelID = "1653859637"
+	channelSecret = "350c50d8c1e4435726d64450f45142c3"
 
 	if socialClient, err = social.New(channelID, channelSecret); err != nil {
 		log.Println("Social SDK:", socialClient, " err:", err)
@@ -44,9 +39,6 @@ func main() {
 	http.HandleFunc("/gotoauthOpenIDpage", gotoauthOpenIDpage)
 	http.HandleFunc("/gotoauthpage", gotoauthpage)
 	http.HandleFunc("/auth", auth)
-
-	//For linked chatbot
-	http.HandleFunc("/callback", callbackHandler)
 
 	//provide by Heroku
 	port := os.Getenv("PORT")
