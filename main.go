@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	social "github.com/kkdai/line-social-sdk-go"
@@ -47,7 +48,7 @@ func main() {
 	// http.HandleFunc("/auth", auth)
 
 	//provide by Heroku
-	port := 80
+	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
 }
