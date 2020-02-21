@@ -123,7 +123,7 @@ func auth(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func accessToken(w http.ResponseWriter, r *http.Request) {
+func AccessToken(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		log.Printf("ParseForm() err: %v\n", err)
 		return
@@ -144,10 +144,7 @@ func accessToken(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("access_token:", token.AccessToken, " refresh_token:", token.RefreshToken)
 
-	w.Header().Set("Server", "A Go Web Server")
-	w.WriteHeader(200)
-
-	lineToken := LineToken{token.AccessToken, token.RefreshToken}
+	lineToken := LineToken{code, inState}
 
 	js, err := json.Marshal(lineToken)
 	if err != nil {
