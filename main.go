@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	social "github.com/kkdai/line-social-sdk-go"
 )
@@ -54,27 +53,18 @@ func main() {
 }
 
 func accessToken(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		log.Printf("ParseForm() err: %v\n", err)
-		return
-	}
 	code := r.URL.Query().Get("code")
-	inState := r.URL.Query().Get("state")
-	//Check the state
-	if strings.Compare(state, inState) != 0 {
-		log.Println("State is not matching.")
-		return
-	}
 	//Request for access token
 	token, err := socialClient.GetAccessToken(fmt.Sprintf("%s", serverURL), code).Do()
 	if err != nil {
 		log.Println("RequestLoginToken err:", err)
-		return
+		// token = fmt.Sprintf("%s", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	log.Println("access_token:", token.AccessToken, " refresh_token:", token.RefreshToken)
+	// log.Println("access_token:", token.AccessToken, " refresh_token:", token.RefreshToken)
 
-	lineToken := LineToken{code, inState}
+	lineToken := LineToken{token.AccessToken, token.RefreshToken}
 
 	js, err := json.Marshal(lineToken)
 	if err != nil {
