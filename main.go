@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	social "github.com/kkdai/line-social-sdk-go"
 	"github.com/line/line-bot-sdk-go/linebot"
@@ -22,7 +21,7 @@ var socialClient *social.Client
 
 func main() {
 	var err error
-	serverURL = "https://line-login-soical.herokuapp.com/"
+	serverURL = "https://line-login-soical.herokuapp.com"
 	channelID = "1653859637"
 	channelSecret = "350c50d8c1e4435726d64450f45142c3"
 
@@ -42,7 +41,7 @@ func main() {
 	// http.HandleFunc("/auth", auth)
 
 	//provide by Heroku
-	port := os.Getenv("PORT")
+	port := 80
 	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
 }

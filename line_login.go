@@ -136,7 +136,7 @@ func accessToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Request for access token
-	token, err := socialClient.GetAccessToken(fmt.Sprintf("%s/accessToken", serverURL), code).Do()
+	token, err := socialClient.GetAccessToken(fmt.Sprintf("%s", serverURL), code).Do()
 	if err != nil {
 		log.Println("RequestLoginToken err:", err)
 		return
