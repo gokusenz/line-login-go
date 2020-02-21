@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -14,6 +15,11 @@ var nounce string
 var state string
 
 const lineLoginURL string = "https://access.line.me/oauth2/v2.1/authorize?response_type=code"
+
+type LineToken struct {
+	AccessToken  string
+	RefreshToken string
+}
 
 func browse(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("login.tmpl"))
@@ -115,4 +121,41 @@ func auth(w http.ResponseWriter, r *http.Request) {
 	if err := tmpl.Execute(w, payload); err != nil {
 		log.Println("Template err:", err)
 	}
+}
+
+func accessToken(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		log.Printf("ParseForm() err: %v\n", err)
+		return
+	}
+	code := r.FormValue("code")
+	inState := r.FormValue("state")
+	//Check the state
+	if strings.Compare(state, inState) != 0 {
+		log.Println("State is not matching.")
+		return
+	}
+	//Request for access token
+	token, err := socialClient.GetAccessToken(fmt.Sprintf("%s/accessToken", serverURL), code).Do()
+	if err != nil {
+		log.Println("RequestLoginToken err:", err)
+		return
+	}
+
+	log.Println("access_token:", token.AccessToken, " refresh_token:", token.RefreshToken)
+
+	w.Header().Set("Server", "A Go Web Server")
+	w.WriteHeader(200)
+
+	lineToken := LineToken{token.AccessToken, token.RefreshToken}
+
+	js, err := json.Marshal(lineToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+
 }

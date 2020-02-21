@@ -22,7 +22,7 @@ var socialClient *social.Client
 
 func main() {
 	var err error
-	serverURL = "http://line-login.igokuz.com/access_token"
+	serverURL = "https://line-login-soical.herokuapp.com/"
 	channelID = "1653859637"
 	channelSecret = "350c50d8c1e4435726d64450f45142c3"
 
@@ -35,10 +35,11 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	//For LINE login
-	http.HandleFunc("/", browse)
-	http.HandleFunc("/gotoauthOpenIDpage", gotoauthOpenIDpage)
-	http.HandleFunc("/gotoauthpage", gotoauthpage)
-	http.HandleFunc("/auth", auth)
+	http.HandleFunc("/", accessToken)
+	// http.HandleFunc("/", accessToken)
+	// http.HandleFunc("/gotoauthOpenIDpage", gotoauthOpenIDpage)
+	// http.HandleFunc("/gotoauthpage", gotoauthpage)
+	// http.HandleFunc("/auth", auth)
 
 	//provide by Heroku
 	port := os.Getenv("PORT")
