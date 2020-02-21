@@ -58,8 +58,8 @@ func accessToken(w http.ResponseWriter, r *http.Request) {
 		log.Printf("ParseForm() err: %v\n", err)
 		return
 	}
-	code := r.FormValue("code")
-	inState := r.FormValue("state")
+	code := r.URL.Query().Get("code")
+	inState := r.URL.Query().Get("state")
 	//Check the state
 	if strings.Compare(state, inState) != 0 {
 		log.Println("State is not matching.")
